@@ -27,3 +27,4 @@ esac
 #         ;;
 # esac
 
+if [ -e /Users/paul/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/paul/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

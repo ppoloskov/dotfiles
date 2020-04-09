@@ -5,9 +5,11 @@ $HOME/**/.cache
 # .Bin is .Trash folder in Aus and UK locale
 $HOME/.Bin
 $HOME/.Trash
+$HOME/.npm
 $HOME/Library/Caches
 $HOME/Library/Logs
 $HOME/Library/Containers/com.apple.mail/Data/DataVaults
+$HOME/Library/Containers/com.microsoft.OneDrive-mac
 $HOME/Library/Application Support/SyncServices/data.version
 $HOME/Library/Application Support/Ubiquity
 $HOME/Library/Caches

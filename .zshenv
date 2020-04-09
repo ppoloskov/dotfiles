@@ -1,7 +1,7 @@
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
-export PATH=$HOME/.local/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
+export PATH=$HOME/.local/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 export RESTIC_PASSWORD_FILE=$HOME/.local/restic_pass
 export AWS_SECRET_ACCESS_KEY=$(cat $HOME/.local/aws_secret_key)

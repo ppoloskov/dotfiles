@@ -15,7 +15,7 @@ call plug#begin('~/.vim/plugged')
 " Plug 'ctrlpvim/ctrlp.vim'
 " Plug 'godlygeek/tabular'
 " Plug 'hecal3/vim-leader-guide'
-" Plug 'tpope/vim-surround'
+Plug 'tpope/vim-surround'
 " Plug 'vim-airline/vim-airline'
 " Plug 'vim-airline/vim-airline-themes'
 Plug 'sbdchd/neoformat'
@@ -27,7 +27,9 @@ Plug 'tpope/vim-commentary'
 
 call plug#end()
 
-let loaded_matchparen = 1
+nnoremap <Leader>q" ciw""<Esc>P
+nnoremap <Leader>q' ciw''<Esc>P
+nnoremap <Leader>qd daW"=substitute(@@,"'\\\|\"","","g")<CR>Plet loaded_matchparen = 1
 
 colorscheme gruvbox
 set background=dark

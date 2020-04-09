@@ -1,2 +1,3 @@
 .local/aws*
+.local/restic_pass
 
