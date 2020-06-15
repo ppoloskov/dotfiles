@@ -15,4 +15,5 @@ $HOME/Library/Application Support/Ubiquity
 $HOME/Library/Caches
 *node_modules*
 *iCloud*
-
+*.dmg
+*.pkg
