@@ -31,6 +31,7 @@ setopt histignorealldups
 setopt histignorespace
 
 setopt extended_glob # rm -- ^*.dmg -- rm all files except .dmgs
+autoload zmv # zmv 'transform.php?dappName=Test&transformer=YAML&v_id=(*)' '$1.txt'
 # HISTCHARS='!^#'
 # HISTCMD=1304
 # HISTFILE=~/.zsh_history
@@ -104,6 +105,10 @@ zstyle ':vcs_info:*' enable git
 
 # http://zsh.sourceforge.net/Doc/Release/User-Contributions.html#Version-Control-Information
 autoload add-zsh-hook
+
+export GPG_TTY=$(tty)
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch gpg-agent
 
 # Emacs tramp fix
 if [[ "$TERM" == "dumb" ]]; then
