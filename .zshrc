@@ -46,15 +46,18 @@ function preexec() {
     timer=$SECONDS
 }
 
+DISABLE_AUTO_TITLE="true"
+
 function precmd() {
     vcs_info
     ELAPSED=""
     if [ $timer ]; then
-	TIME=$(($SECONDS-$timer))
-	if [[ $TIME -gt 0 ]]; then
-	    ELAPSED="exec: %F{yellow} $TIME s%f "
-	fi
+	    TIME=$(($SECONDS-$timer))
+	    if [[ $TIME -gt 0 ]]; then
+	        ELAPSED="exec: %F{yellow} $TIME s%f "
+	    fi
     fi
+    print -Pn "\e]0; $OSMASCOT %~ \a"
     unset timer TIME
 }
 
@@ -71,6 +74,8 @@ case `uname -s` in
 	Darwin )
 		OSMASCOT=🍎
 		OS='%B%F{white}%K{240} MacOS X %f%k%b'
+        alias -s {conf,md,txt}=emacsclient -n
+        alias ls='ls -lahG'
 	;;
 esac
 
@@ -123,3 +128,4 @@ if [[ "$TERM" == "dumb" ]]; then
   PS1='$ '
   RPROMPT=''
 fi
+
