@@ -1,4 +1,6 @@
 savedCover = ""
+ 
+hs.menuIcon(true)
 
 coverDisplay = hs.canvas.new{
    x=100,

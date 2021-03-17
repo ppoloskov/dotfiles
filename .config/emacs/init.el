@@ -21,8 +21,14 @@
 (global-display-line-numbers-mode 1)
 (setq-default cursor-type 'bar)
 (setq-default line-spacing 0.2)
-(set-face-attribute 'default nil :height 140 :font "Hack" :weight 'regular)
 
+
+(cond 
+ ((find-font (font-spec :name "Hack"))
+  (set-face-attribute 'default nil :height 140 :font "Hack" :weight 'regular))
+;;  (set-frame-font "DejaVu Sans Mono-12"))
+ ((find-font (font-spec :name "Hack Nerd Font Mono"))
+ (set-face-attribute 'default nil :height 140 :font "Hack Nerd Font Mono" :weight 'regular)))
 
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
