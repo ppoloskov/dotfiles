@@ -8,10 +8,10 @@ coverDisplay = hs.canvas.new{
    h=50,
    w=50}
    :appendElements(
-      {
-	 type="image",
+      {		
+         type="image",
 	 imageScaling = "scaleToFit",
-		  })
+		        })
 
 local coverUrl = ""
 
@@ -121,7 +121,7 @@ emacsKeys:bind({'ctrl'}, 'e', function() hs.eventtap.keyStroke({"cmd"}, "right")
 -- with a callback function to be called when application events happen
 watcher = hs.application.watcher.new(
    function (appName, eventType, appObject)
-      if (appName == "Emacs") then
+      if (appName == "Emacs" or appName == "Terminal") then
 	 if (eventType == hs.application.watcher.activated) then
 	    -- Emacs just got focus, disable our hotkeys
 	    emacsKeys:exit()

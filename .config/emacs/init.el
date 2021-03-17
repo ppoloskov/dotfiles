@@ -29,6 +29,9 @@
 ;;  (set-frame-font "DejaVu Sans Mono-12"))
  ((find-font (font-spec :name "Hack Nerd Font Mono"))
  (set-face-attribute 'default nil :height 140 :font "Hack Nerd Font Mono" :weight 'regular)))
+(set-fontset-font t 'symbol (font-spec :family "Apple Symbols") nil 'prepend)
+(set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend)
+
 
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
@@ -151,10 +154,11 @@
      ("melpa" . "https://melpa.org/packages/")
      ("org" . "https://orgmode.org/elpa/")))
  '(package-selected-packages
-   '(which-key marginalia icomplete-vertical selectrum-prescient company yaml-mode lua-mode ox-clip org-rich-yank nov flycheck selectrum orderless modus-operandi-theme leaf-keywords)))
+   '(which-key marginalia icomplete-vertical selectrum-prescient company yaml-mode lua-mode ox-clip org-rich-yank nov flycheck orderless modus-operandi-theme leaf-keywords)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
