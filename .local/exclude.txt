@@ -17,3 +17,5 @@ $HOME/Library/Caches
 *iCloud*
 *.dmg
 *.pkg
+*.log
+
