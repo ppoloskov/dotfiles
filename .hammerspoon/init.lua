@@ -122,6 +122,7 @@ emacsKeys:bind({'ctrl'}, 'e', function() hs.eventtap.keyStroke({"cmd"}, "right")
 watcher = hs.application.watcher.new(
    function (appName, eventType, appObject)
       if (appName == "Emacs" or appName == "Terminal") then
+      print(appName)
 	 if (eventType == hs.application.watcher.activated) then
 	    -- Emacs just got focus, disable our hotkeys
 	    emacsKeys:exit()

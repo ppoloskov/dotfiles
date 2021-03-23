@@ -1,3 +1,4 @@
 .local/aws*
 .local/restic_pass
+.config/fb2c/oasis-def.toml
 
