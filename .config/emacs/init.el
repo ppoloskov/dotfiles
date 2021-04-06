@@ -25,8 +25,13 @@
 
 ;; (setq initial-major-mode 'org-mode)
 
+;; This will push your clipboard onto the killring in case you kill
+;; something in emacs before pasting the clipboard
+(setq save-interprogram-paste-before-kill t)
+;; pushes your current yank in emacs onto the clipboard
+(setq yank-pop-change-selection t)
 
-(cond 
+(cond
  ((find-font (font-spec :name "Hack"))
   (set-face-attribute 'default nil :height 140 :font "Hack" :weight 'regular))
 ;;  (set-frame-font "DejaVu Sans Mono-12"))
@@ -34,7 +39,6 @@
  (set-face-attribute 'default nil :height 140 :font "Hack Nerd Font Mono" :weight 'regular)))
 (set-fontset-font t 'symbol (font-spec :family "Apple Symbols") nil 'prepend)
 (set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend)
-
 
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
