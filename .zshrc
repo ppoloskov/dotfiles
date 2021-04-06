@@ -1,3 +1,5 @@
+# If getting "zsh compinit: insecure directories, run compaudit for list."
+# run "compaudit | xargs chmod g-w"
 autoload -Uz compinit promptinit
 compinit
 promptinit

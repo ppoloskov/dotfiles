@@ -60,11 +60,15 @@ function sleepWatch(eventType)
 		hs.alert.show("Going to sleep!")
 		host = hs.host.localizedName()
         	action = "sleep"
-		-- Set volume of default output device to 10% on sleep 
+		-- Set volume of default output device to 10% on sleep
+		print(hs.audiodevice.defaultOutputDevice():volume())
 		hs.audiodevice.defaultOutputDevice():setVolume(10)
+		print("10%")
+		print(hs.audiodevice.defaultOutputDevice():volume())
 	elseif (eventType == hs.caffeinate.watcher.systemDidWake) then
 		hs.alert.show("Waking up!")
         	action = "awake"
+		print(hs.audiodevice.defaultOutputDevice():volume())
 	end
 
     -- write current state of laptop lid to file
@@ -81,6 +85,17 @@ end
 
 local sleepWatcher = hs.caffeinate.watcher.new(sleepWatch)
 sleepWatcher:start()
+
+-- Set airpods volume to 10% when connected
+hs.audiodevice.watcher.setCallback(function (event_name)
+      if hs.audiodevice.current().name:find("AirPods") then 
+	 print(event_name, "_", "Airpods connected")
+	 hs.audiodevice.defaultOutputDevice():setVolume(10)
+      end 
+end)
+
+hs.audiodevice.watcher:start()
+
 
 -- Add mouse callback to close on click
 -- https://www.hammerspoon.org/docs/hs.canvas.html#mouseCallback
@@ -121,14 +136,17 @@ emacsKeys:bind({'ctrl'}, 'e', function() hs.eventtap.keyStroke({"cmd"}, "right")
 -- with a callback function to be called when application events happen
 watcher = hs.application.watcher.new(
    function (appName, eventType, appObject)
-      if (appName == "Emacs" or appName == "Terminal") then
-      print(appName)
-	 if (eventType == hs.application.watcher.activated) then
+      if (eventType == hs.application.watcher.activated) then
+	 print(appName)
+	 if (appName == "Emacs" or appName == "Terminal") then
 	    -- Emacs just got focus, disable our hotkeys
 	    emacsKeys:exit()
-	 elseif (eventType == hs.application.watcher.deactivated) then
+	    print("Emacs keys disabled")
+	 else
+	    --if (eventType == hs.application.watcher.deactivated) then
 	    -- Emacs just lost focus, enable our hotkeys
 	    emacsKeys:enter()
+	    print("Emacs keys enabled")
 	 end
       end
    end

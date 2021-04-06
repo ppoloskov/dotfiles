@@ -19,8 +19,11 @@
 (blink-cursor-mode -1)
 (global-visual-line-mode 1)
 (global-display-line-numbers-mode 1)
+(setq inhibit-startup-screen 1)
 (setq-default cursor-type 'bar)
 (setq-default line-spacing 0.2)
+
+;; (setq initial-major-mode 'org-mode)
 
 
 (cond 
@@ -81,6 +84,8 @@
 
 (leaf icomplete-vertical
   :ensure t
+  :require t
+  :global-minor-mode savehist-mode icomplete-mode icomplete-vertical-mode
   :bind (:icomplete-minibuffer-map
          ("<down>" . icomplete-forward-completions)
          ("C-n" . icomplete-forward-completions)
@@ -90,15 +95,29 @@
   :config
   (setq completions-format 'one-column)
   (setq completions-detailed nil)
-  (savehist-mode +1)
-  (icomplete-mode +1)
-  (icomplete-vertical-mode +1)
   (leaf orderless
     :ensure t
     :config
     (setq completion-styles '(partial-completion flex orderless))
     )
   )
+
+(leaf visual-fill-column
+  ;;:hook
+  ;;(visual-fill-column-mode. visual-line-mode)
+  )
+
+(leaf nov
+  :hook
+  (nov . (lambda () (display-line-numbers-mode -1)))
+  (nov . visual-line-mode)
+  (nov . visual-fill-column-mode)  
+  :config
+  (setq nov-text-width t)
+  (setq visual-fill-column-center-text t)
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+  )
+
 
 (leaf which-key
   :ensure t
@@ -124,6 +143,11 @@
 ;;   ;; (setq selectrum-refine-candidates-function #'orderless-filter)
 ;;   ;; (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
 ;;   )
+
+(leaf company
+  :ensure t
+  :config
+  global-company-mode)
 
 (leaf flycheck
   :ensure t
@@ -154,7 +178,7 @@
      ("melpa" . "https://melpa.org/packages/")
      ("org" . "https://orgmode.org/elpa/")))
  '(package-selected-packages
-   '(which-key marginalia icomplete-vertical selectrum-prescient company yaml-mode lua-mode ox-clip org-rich-yank nov flycheck orderless modus-operandi-theme leaf-keywords)))
+   '(shrface which-key marginalia icomplete-vertical selectrum-prescient company yaml-mode lua-mode ox-clip org-rich-yank nov flycheck selectrum orderless modus-operandi-theme leaf-keywords)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
