@@ -90,7 +90,7 @@ sleepWatcher:start()
 hs.audiodevice.watcher.setCallback(function (event_name)
       if hs.audiodevice.current().name:find("AirPods") then 
 	 print(event_name, "_", "Airpods connected")
-	 hs.audiodevice.defaultOutputDevice():setVolume(10)
+	 hs.audiodevice.defaultOutputDevice():setVolume(35)
       end 
 end)
 

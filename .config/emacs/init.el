@@ -7,12 +7,12 @@
 
 ;; Increase garbage collector limit to 124 MB
 ;; Warn when opening files over 10 MB
-(setq gc-cons-threshold
-      (* 124 1024 1024))
-(setq large-file-warning-threshold
-      (* 10 1024 1024))
-(setq read-process-output-max
-      (* 10 1024 1024))
+(leaf *alloc
+  :setq `((gc-cons-threshold		. ,(* 124 1024 1024))
+	  (large-file-warning-threshold . ,(*  10 1024 1024))
+	  (read-process-output-max	. ,(*  10 1024 1024))
+	  )
+  )
 
 ;; Visual setting
 (tool-bar-mode -1)
@@ -34,9 +34,9 @@
 (cond
  ((find-font (font-spec :name "Hack"))
   (set-face-attribute 'default nil :height 140 :font "Hack" :weight 'regular))
-;;  (set-frame-font "DejaVu Sans Mono-12"))
  ((find-font (font-spec :name "Hack Nerd Font Mono"))
- (set-face-attribute 'default nil :height 140 :font "Hack Nerd Font Mono" :weight 'regular)))
+  (set-face-attribute 'default nil :height 140 :font "Hack Nerd Font Mono" :weight 'regular)))
+
 (set-fontset-font t 'symbol (font-spec :family "Apple Symbols") nil 'prepend)
 (set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend)
 
@@ -82,7 +82,7 @@
 ;;(setq org-default-notes-file
 ;;      (concat org-directory "/notes.org"))
 
-(leaf modus-operandi-theme
+(leaf modus-themes
   :ensure t
   :config (load-theme 'modus-operandi t))
 
@@ -107,26 +107,43 @@
   )
 
 (leaf visual-fill-column
+  :ensure t
   ;;:hook
   ;;(visual-fill-column-mode. visual-line-mode)
   )
 
-(leaf nov
+(leaf *org
   :hook
-  (nov . (lambda () (display-line-numbers-mode -1)))
-  (nov . visual-line-mode)
-  (nov . visual-fill-column-mode)  
-  :config
-  (setq nov-text-width t)
-  (setq visual-fill-column-center-text t)
-  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+  (org-mode-hook . (lambda ()
+		     (org-indent-mode)
+		     (visual-fill-column-mode))
+		 )
+  )
+
+(leaf *prog
+  :hook
+  (prog-mode-hook . company-mode)
+  )
+
+(leaf nov
+  :mode "\\.epub\\'"
+  :hook
+  (nov-mode-hook . (lambda ()
+	   (display-line-numbers-mode -1)
+	   (visual-line-mode)
+	   (visual-fill-column-mode)
+	   (setq visual-fill-column-center-text t))
+		 )
+  :custom
+  (nov-text-qwidth . t)
   )
 
 
 (leaf which-key
   :ensure t
+  :require t
   :config
-  which-key-mode
+  (which-key-mode)
   )
 
 (recentf-mode +1)
@@ -150,14 +167,13 @@
 
 (leaf company
   :ensure t
-  :config
-  global-company-mode)
+  :hook (prog-mode-hook . company-mode)
+  )
 
 (leaf flycheck
   :ensure t
   :config
   (global-flycheck-mode)
-
   )
 
 (leaf ox-clip
@@ -182,7 +198,7 @@
      ("melpa" . "https://melpa.org/packages/")
      ("org" . "https://orgmode.org/elpa/")))
  '(package-selected-packages
-   '(shrface which-key marginalia icomplete-vertical selectrum-prescient company yaml-mode lua-mode ox-clip org-rich-yank nov flycheck selectrum orderless modus-operandi-theme leaf-keywords)))
+   '(visual-fill-column modus-themes shrface which-key marginalia icomplete-vertical selectrum-prescient company yaml-mode lua-mode ox-clip org-rich-yank nov flycheck selectrum orderless leaf-keywords)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
