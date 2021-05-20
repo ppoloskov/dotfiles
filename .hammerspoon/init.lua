@@ -1,5 +1,6 @@
 savedCover = ""
- 
+
+
 hs.menuIcon(true)
 
 coverDisplay = hs.canvas.new{
@@ -8,10 +9,11 @@ coverDisplay = hs.canvas.new{
    h=50,
    w=50}
    :appendElements(
-      {		
+      {
          type="image",
 	 imageScaling = "scaleToFit",
-		        })
+      }
+		  )
 
 local coverUrl = ""
 
@@ -24,7 +26,9 @@ local function getCover(exitCode, stdOut,stdErr)
    end
 end
 
+
 -- So, lools like osascript is prone to memory leaks, so it's better to minimize it's usage.
+
 -- Let's use window filters to determine what Spotify is playing
 spotifyWatcher = hs.window.filter.new(false):setAppFilter('Spotify',{allowTitles=1})
 spotifyWatcher:subscribe(
@@ -40,7 +44,7 @@ spotifyWatcher:subscribe(
 	 -- Get coverUrl from cli osascript trying to reduce memory leak
 	 hs.task.new(
 	    "/usr/bin/osascript",
-	    getCover, 
+	    getCover,
 	    {
 	       "-e",
 	       "Application('Spotify').currentTrack.artworkUrl()",
@@ -73,20 +77,20 @@ function sleepWatch(eventType)
 
     -- write current state of laptop lid to file
     if (action ~= "unknown") then
-        filename = string.format("%s/mylaptoplid.txt", os.getenv( "HOME" ))
-        local f = assert(io.open(filename, "a+"))
-        local tstamp = os.date("%d/%m/%y %H:%M:%S")
-        local s = string.format("%s %s\n", tstamp, action)
-        f:write( s )
-        f:flush()
-        f:close()
+       local filename = string.format("%s/mylaptoplid.txt", os.getenv( "HOME" ))
+       local f = assert(io.open(filename, "a+"))
+       local tstamp = os.date("%d/%m/%y %H:%M:%S")
+       local s = string.format("%s %s\n", tstamp, action)
+       f:write( s )
+       f:flush()
+       f:close()
     end
 end
 
 local sleepWatcher = hs.caffeinate.watcher.new(sleepWatch)
 sleepWatcher:start()
 
--- Set airpods volume to 10% when connected
+-- Set airpods volume to 35% when connected
 hs.audiodevice.watcher.setCallback(function (event_name)
       if hs.audiodevice.current().name:find("AirPods") then 
 	 print(event_name, "_", "Airpods connected")
