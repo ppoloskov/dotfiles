@@ -59,43 +59,29 @@ spotifyWatcher:subscribe(
 end)
 
 function sleepWatch(eventType)
-    local action = "unknown"
-	if (eventType == hs.caffeinate.watcher.systemWillSleep) then
-		hs.alert.show("Going to sleep!")
-		host = hs.host.localizedName()
-        	action = "sleep"
-		-- Set volume of default output device to 10% on sleep
-		print(hs.audiodevice.defaultOutputDevice():volume())
-		hs.audiodevice.defaultOutputDevice():setVolume(10)
-		print("10%")
-		print(hs.audiodevice.defaultOutputDevice():volume())
-	elseif (eventType == hs.caffeinate.watcher.systemDidWake) then
-		hs.alert.show("Waking up!")
-        	action = "awake"
-		print(hs.audiodevice.defaultOutputDevice():volume())
-	end
-
-    -- write current state of laptop lid to file
-    if (action ~= "unknown") then
-       local filename = string.format("%s/mylaptoplid.txt", os.getenv( "HOME" ))
-       local f = assert(io.open(filename, "a+"))
-       local tstamp = os.date("%d/%m/%y %H:%M:%S")
-       local s = string.format("%s %s\n", tstamp, action)
-       f:write( s )
-       f:flush()
-       f:close()
+   if (eventType == hs.caffeinate.watcher.screensDidSleep) then
+      -- Set volume of default output device to 10% on sleep
+      print(hs.audiodevice.defaultOutputDevice():volume())
+      hs.audiodevice.defaultOutputDevice():setVolume(10)
+      print("Going to sleep, setting volume to 10%")
+      print(hs.audiodevice.defaultOutputDevice():name())
+      print(hs.audiodevice.defaultOutputDevice():volume())
+    elseif (eventType == hs.caffeinate.watcher.systemDidWake) then
+       hs.alert.show("Waking up!")
+       action = "awake"
+       print(hs.audiodevice.defaultOutputDevice():volume())
     end
 end
 
-local sleepWatcher = hs.caffeinate.watcher.new(sleepWatch)
+sleepWatcher = hs.caffeinate.watcher.new(sleepWatch)
 sleepWatcher:start()
 
 -- Set airpods volume to 35% when connected
 hs.audiodevice.watcher.setCallback(function (event_name)
-      if hs.audiodevice.current().name:find("AirPods") then 
+      if hs.audiodevice.current().name:find("AirPods") then
 	 print(event_name, "_", "Airpods connected")
 	 hs.audiodevice.defaultOutputDevice():setVolume(35)
-      end 
+      end
 end)
 
 hs.audiodevice.watcher:start()
@@ -141,16 +127,13 @@ emacsKeys:bind({'ctrl'}, 'e', function() hs.eventtap.keyStroke({"cmd"}, "right")
 watcher = hs.application.watcher.new(
    function (appName, eventType, appObject)
       if (eventType == hs.application.watcher.activated) then
-	 print(appName)
 	 if (appName == "Emacs" or appName == "Terminal") then
 	    -- Emacs just got focus, disable our hotkeys
 	    emacsKeys:exit()
-	    print("Emacs keys disabled")
 	 else
 	    --if (eventType == hs.application.watcher.deactivated) then
 	    -- Emacs just lost focus, enable our hotkeys
 	    emacsKeys:enter()
-	    print("Emacs keys enabled")
 	 end
       end
    end
@@ -159,4 +142,9 @@ watcher = hs.application.watcher.new(
 watcher:start()
 emacsKeys:enter()
 
+for _, dev in pairs(hs.audiodevice.allDevices()) do
+   if dev:name():find("Airpods") then
+      print("Airpods")
+   end
+end
 
