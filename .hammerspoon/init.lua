@@ -59,7 +59,10 @@ spotifyWatcher:subscribe(
 end)
 
 function sleepWatch(eventType)
-    local action = "unknown"
+	 print("+---")
+	 print(eventType)
+	 print("----")
+	 local action = "unknown"
 	if (eventType == hs.caffeinate.watcher.systemWillSleep) then
 		hs.alert.show("Going to sleep!")
 		host = hs.host.localizedName()
@@ -87,7 +90,7 @@ function sleepWatch(eventType)
     end
 end
 
-local sleepWatcher = hs.caffeinate.watcher.new(sleepWatch)
+sleepWatcher = hs.caffeinate.watcher.new(sleepWatch)
 sleepWatcher:start()
 
 -- Set airpods volume to 35% when connected
@@ -141,16 +144,15 @@ emacsKeys:bind({'ctrl'}, 'e', function() hs.eventtap.keyStroke({"cmd"}, "right")
 watcher = hs.application.watcher.new(
    function (appName, eventType, appObject)
       if (eventType == hs.application.watcher.activated) then
-	 print(appName)
 	 if (appName == "Emacs" or appName == "Terminal") then
 	    -- Emacs just got focus, disable our hotkeys
 	    emacsKeys:exit()
-	    print("Emacs keys disabled")
+	    -- print("Emacs keys disabled")
 	 else
 	    --if (eventType == hs.application.watcher.deactivated) then
 	    -- Emacs just lost focus, enable our hotkeys
 	    emacsKeys:enter()
-	    print("Emacs keys enabled")
+	    -- print("Emacs keys enabled")
 	 end
       end
    end
