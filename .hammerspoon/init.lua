@@ -59,6 +59,7 @@ spotifyWatcher:subscribe(
 end)
 
 function sleepWatch(eventType)
+<<<<<<< HEAD
 	 print("+---")
 	 print(eventType)
 	 print("----")
@@ -87,6 +88,19 @@ function sleepWatch(eventType)
        f:write( s )
        f:flush()
        f:close()
+=======
+   if (eventType == hs.caffeinate.watcher.screensDidSleep) then
+      -- Set volume of default output device to 10% on sleep
+      print(hs.audiodevice.defaultOutputDevice():volume())
+      hs.audiodevice.defaultOutputDevice():setVolume(10)
+      print("Going to sleep, setting volume to 10%")
+      print(hs.audiodevice.defaultOutputDevice():name())
+      print(hs.audiodevice.defaultOutputDevice():volume())
+    elseif (eventType == hs.caffeinate.watcher.systemDidWake) then
+       hs.alert.show("Waking up!")
+       action = "awake"
+       print(hs.audiodevice.defaultOutputDevice():volume())
+>>>>>>> e47b622388adb044ab3cdd35aa25214d32ea751a
     end
 end
 
@@ -95,10 +109,10 @@ sleepWatcher:start()
 
 -- Set airpods volume to 35% when connected
 hs.audiodevice.watcher.setCallback(function (event_name)
-      if hs.audiodevice.current().name:find("AirPods") then 
+      if hs.audiodevice.current().name:find("AirPods") then
 	 print(event_name, "_", "Airpods connected")
 	 hs.audiodevice.defaultOutputDevice():setVolume(35)
-      end 
+      end
 end)
 
 hs.audiodevice.watcher:start()
@@ -147,12 +161,18 @@ watcher = hs.application.watcher.new(
 	 if (appName == "Emacs" or appName == "Terminal") then
 	    -- Emacs just got focus, disable our hotkeys
 	    emacsKeys:exit()
+<<<<<<< HEAD
 	    -- print("Emacs keys disabled")
+=======
+>>>>>>> e47b622388adb044ab3cdd35aa25214d32ea751a
 	 else
 	    --if (eventType == hs.application.watcher.deactivated) then
 	    -- Emacs just lost focus, enable our hotkeys
 	    emacsKeys:enter()
+<<<<<<< HEAD
 	    -- print("Emacs keys enabled")
+=======
+>>>>>>> e47b622388adb044ab3cdd35aa25214d32ea751a
 	 end
       end
    end
@@ -161,4 +181,9 @@ watcher = hs.application.watcher.new(
 watcher:start()
 emacsKeys:enter()
 
+for _, dev in pairs(hs.audiodevice.allDevices()) do
+   if dev:name():find("Airpods") then
+      print("Airpods")
+   end
+end
 
