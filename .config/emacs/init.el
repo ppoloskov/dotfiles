@@ -37,30 +37,29 @@
 
 ;; Visual setting
 (leaf *ui
+  :global-minor-mode (global-visual-line-mode
+		      size-indication-mode
+		      column-number-mode
+		      pixel-scroll-precision-mode)		      
   :custom
-  (tool-bar-mode		.	nil)
-  (blink-cursor-mode		.	nil)
-  (scroll-bar-mode		.	nil)
-  (global-visual-line-mode	.	t)
-  (inhibit-startup-screen	.	t)
+  ((tool-bar-mode blink-cursor-mode scroll-bar-mode)   .	nil)
+  ((inhibit-startup-message
+    inhibit-startup-screen help-window-select)         .	t)
+  (scroll-conservatively        .       200) ;; Don't jump halfscreen when cursor is near the edge of the screen
   (cursor-type			.	'bar)
   (line-spacing			.	0.15)
   (initial-frame-alist		.	'((width . 140) (height . 50)))
   (default-frame-alist		.	initial-frame-alist)
-  (column-number-mode           .	t)
-  (inhibit-startup-message	.	t)
-  (inhibit-startup-screen       .	t)
-  (help-window-select           .	t)
   )
 
 (leaf *scrolling
-  :custom
-  (scroll-step			 . 1)
-  (scroll-conservatively         . 10000)
-  (mouse-wheel-scroll-amount     . '(1 ((shift) . 1)))
-  (mouse-wheel-progressive-speed . nil)
-  (mouse-wheel-follow-mouse	 . 't)
-  (frame-resize-pixelwise       .	t)
+  ;; :custom
+  ;; (scroll-step			 . 1)
+  ;; (scroll-conservatively         . 10000)
+  ;; (mouse-wheel-scroll-amount     . '(1 ((shift) . 1)))
+  ;; (mouse-wheel-progressive-speed . nil)
+  ;; (mouse-wheel-follow-mouse	 . 't)
+  ;; (frame-resize-pixelwise       .	t)
   )
 
 ;; Don't want to type "yes" or "no" at prompts.
@@ -75,19 +74,32 @@
 ;; (setq help-window-select 'always)
 
 (leaf *backup
+  :doc "Don't like default over-engineered approach to auto saves and backups, so I simply keep them all in one directory"
+  :pre-setq (backup-dir . `,(locate-user-emacs-file "backups/"))
+  :init (when (not (file-directory-p backup-dir)) (make-directory backup-dir t))
   :custom
-  `(auto-save-list-file-prefix		.	,(locate-user-emacs-file "autosave/"))
-  (auto-save-file-name-transforms	.	`((".*" ,auto-save-list-file-prefix t)))
-  (backup-directory-alist		.	`(("." . ,(locate-user-emacs-file "backups"))))
-;; (setq auto-save-timeout 15)
-;; (setq auto-save-interval 60)
+  ;; Trailing slash in directory name is important for transform to work
+  (auto-save-file-name-transforms	.	`((".*" ,backup-dir t)))
+  (auto-save-list-file-prefix		.	`,(concat backup-dir ".saves-"))
+  (auto-save-interval			.	60)
+  (auto-save-timeout			.	15)
+  ((backup-directory-alist
+    tramp-backup-directory-alist)      	.	`((".*" . ,backup-dir)))
+  (tramp-auto-save-directory		.	`,backup-dir)
+  ;; Don't de-link hard links, clean up the backups and use version numbers on backups,                  
+  ((auto-save-default
+    backup-by-copying
+    delete-old-versions
+    version-control)			.	t)
+  (kept-new-versions			.	5) ; keep some new versions                           
+  (kept-old-versions			.	2) ; and some old ones, too           
   )
 
 ;; ;; This will push your clipboard onto the killring in case you kill
 ;; ;; something in emacs before pasting the clipboard
-;; (setq save-interprogram-paste-before-kill t)
+(setq save-interprogram-paste-before-kill t)
 ;; ;; pushes your current yank in emacs onto the clipboard
-;; (setq yank-pop-change-selection t)
+(setq yank-pop-change-selection t)
 
 (cond ((find-font (font-spec :name "Hack"))
        (set-face-attribute 'default nil
@@ -117,6 +129,7 @@
 
 ;;(setq org-default-notes-file
 ;;      (concat org-directory "/notes.org"))
+
 (leaf modus-themes
   :ensure t
   :custom
@@ -257,7 +270,6 @@
   (history-length			.	10000)
   (recentf-max-saved-items		.	100) ;; just 20 is too recent
   (save-place-forget-unreadable-files . t)
-  (auto-save-default              . t)
   :global-minor-mode
   (recentf-mode)
   (savehist-mode)
@@ -281,21 +293,21 @@
    (leaf orderless
      :ensure t
      :custom
-     (completion-styles                          .
-						 '(basic
-						   substring
-						   initials
-						   flex
-						   partial-completion
-						   orderless))
+     ;; (completion-styles                          .
+     ;; 						 '(basic
+     ;; 						   substring
+     ;; 						   initials
+     ;; 						   flex
+     ;; 						   partial-completion
+     ;; 						   orderless))
+     ;; (completion-category-overrides              .
+     ;; 						 '((file (styles . (
+     ;; 								    flex
+     ;; 								    partial-completion
+     ;; 								    orderless)))))
+     (completion-styles . '(orderless partial-completion flex))
      (completion-category-overrides              .
-						 '((file (styles . (
-								    flex
-								    partial-completion
-								    orderless)))))
-     ;;    (completion-styles . '(orderless partial-completion flex))
-     ;;(completion-category-overrides              .
-     ;;					 '((file (styles . (partial-completion)))))
+						 '((file (styles . (partial-completion)))))
      (read-buffer-completion-ignore-case		.	t)
      (read-file-name-completion-ignore-case	.	t)
      (enable-recursive-minibuffers		.	t)
@@ -323,7 +335,7 @@
      :init
      (fset 'multi-occur #'consult-multi-occur)
      :setq
-     (completion-in-region-function . #'consult-completion-in-region)
+     ;; (completion-in-region-function . #'consult-completion-in-region)
      (consult-preview-mode))
 
  (leaf vertico
@@ -336,10 +348,6 @@
   )
 
 ;; ----------------------------------------
-
-;; ;;(use-package ctrlf
-;; ;;  :init (ctrlf-mode 1))
-
 ;; (leaf vue-mode
 ;;   :ensure t
 ;;   :hook
@@ -353,11 +361,6 @@
   (leaf *line-numbers
     :hook
     (prog-mode-hook . display-line-numbers-mode))
-  
-  (leaf corfu
-    :ensure t
-    :require t
-    :hook (prog-mode-hook . corfu-mode))
   
   (leaf *parens-mode
     :doc "Highlight matching parents"
@@ -382,23 +385,64 @@
 
   (leaf rainbow-delimiters
     :ensure t
-    :hook (prog-mode-hook . rainbow-delimiters-mode)))
+    :hook (prog-mode-hook . rainbow-delimiters-mode))
 
-;; (leaf lua-mode
-;;   :ensure t
-;;   :custom
-;;   (lsp-lua-diagnostics-globals . ["hs" "spoon"])
-;;   (lsp-lua-workspace-library .
-;; 			     '((/Applications/Hammerspoon.app/Contents/Resources/build/stub . t)))
-;;   :setq
-;;   (lsp-lua-workspace-max-preload . 2048)
-;;   (lsp-lua-workspace-preload-file-size . 200)
-;; )
+  (leaf corfu
+    :ensure t
+    :require t
+    :custom
+    (tab-always-indent . 'complete)
+    (tab-first-completion . 'word)
+    :bind (:corfu-map
+           ("<tab>" . corfu-complete))
+    :hook (prog-mode-hook . corfu-mode))
 
-(leaf yaml-mode
-  :ensure t
-  :mode (("\\.ya?ml$" . yaml-mode))
+  (leaf eglot
+    ;;:bind (:map eglot-mode-map
+    ;;            ("M-." . xref-find-definitions)
+    ;;            ("C-c h" . eglot-help-at-point))
+    :hook ((lua-mode . eglot-ensure)
+	   ;; (css-mode . eglot-ensure)
+           ;; (js2-mode . eglot-ensure)
+           ;; (web-mode . (lambda ()
+           ;;               (when (string-equal "html" web-mode-content-type)
+           ;;                 (eglot-ensure))))
+           ;; (html-mode . eglot-ensure)
+           ;; (json-mode . eglot-ensure)
+           ;; (rjsx-mode . eglot-ensure)
+           ;; (dockerfile-mode . eglot-ensure)
+	   )
+    :config
+    (setenv "LUA_LANGUAGE_SERVER" "/Users/paul/.config/emacs/.cache/lsp/lua-language-server")
+    (setq eglot-server-programs
+          '((lua-mode . ("/Users/paul/.config/emacs/.cache/lsp/lua-language-server/bin/lua-language-server"))
+	    (js-mode . ("typescript-language-server" "--stdio"))
+	    ;; (sh-mode . ("bash-language-server" "start"))
+	  ;; (css-mode . ("css-languageserver" "--stdio"))
+	  ;; (web-mode . (lambda ()
+	  ;;               (when (string-equal "html" web-mode-content-type)
+	  ;;                 ("html-languageserver" "--stdio"))))
+	  ;; (html-mode . ("html-languageserver" "--stdio"))
+	    (json-mode . ("json-languageserver" "--stdio"))
+	  ;; (dockerfile-mode . ("docker-langserver" "--stdio")
+	 )
+          ;;eglot-ignored-server-capabilites '(:hoverProvider)
+	  )
+    :ensure t)
+
+  (leaf lua-mode
+    :ensure t
+    :hook (lua-mode-hook . eglot-ensure))
+  
+  (leaf yaml-mode
+    :ensure t
+    :mode (("\\.ya?ml$" . yaml-mode))
+    )
   )
+
+(leaf csv-mode
+  :ensure t
+  :mode (("\\.csv$" . csv-align-mode)))
 
 (leaf move-text
   :ensure t
@@ -406,48 +450,34 @@
   (move-text-default-bindings))
 
 (leaf ispell
-  :ensure t
+  ;; Install dictionaries from 'https://github.com/wooorm/dictionaries'
   :require t
+  :if (executable-find "hunspell")
+  :init
+  (setenv "LANG" "en_AU.UTF-8")
+  (setenv "DICPATH" (concat (getenv "HOME") "/Library/Spelling"))
   :custom
-  (ispell-program-name . "hunspell")
-  (ispell-dictionary . "ru_RU,en_AU")
-  (flyspell-prog-text-faces . '(font-lock-comment-face font-lock-doc-face))
+  (ispell-program-name		.	"hunspell")
+  (ispell-dictionary		.	"ru_RU,en_AU")
+  (flyspell-prog-text-faces	.	'(font-lock-comment-face font-lock-doc-face))
+  (ispell-personal-dictionary	.	`,(locate-user-emacs-file "hunspell_personal"))
   :config
-;;  (setenv "LANG" "en_AU.UTF-8")
   (ispell-set-spellchecker-params)
   (ispell-hunspell-add-multi-dic "ru_RU,en_AU")
-;;  (ispell-change-dictionary "ru_RU,en_AU" t)
-;;  (flyspell-mode 1)
+  ;; The personal dictionary file has to exist, otherwise hunspell will
+  ;; silently not use it.
+  (unless (file-exists-p ispell-personal-dictionary)
+    (write-region "" nil ispell-personal-dictionary nil 0))
+  ;; Save highlighted word to personal dictionary, no questions asked
+  (defun pp/my-save-word ()
+    (interactive)
+    (let ((current-location (point))
+          (word (flyspell-get-word)))
+      (when (consp word)    
+	(flyspell-do-correct 'save nil (car word) current-location (cadr word) (caddr word) current-location))))
+  ;;  :global-minor-mode flyspell-prog-mode
+  
   )
-
-;; ;; tts  провка 
-;; ;; провка коровка провка ntgb тест \етс. turmoil. провка.  turmoil  
-;; ;; Tets. 
-;; ;;(leaf ispell
-;; ;;   ;;:if (executable-find "hunspell")
-;; ;;   :ensure t
-;; ;;   :require t
-;; ;;   :init
-;; ;;   ;; ispell-set-spellchecker-params has to be called
-;; ;;   ;; before ispell-hunspell-add-multi-dic will work
-;; ;;   (ispell-set-spellchecker-params)
-;; ;;   (ispell-hunspell-add-multi-dic "ru_RU,en_US"))
-
-;; ;; (leaf *ispell
-;; ;;   :require ispell
-;; ;;   :init
-;; ;;   (ispell-set-spellchecker-params)
-;; ;; ;;   :init
-;; ;; ;;    ;; Set $DICPATH to "$HOME/Library/Spelling" for hunspell.
-;; ;; ;;    (setenv "DICPATH" (concat (getenv "HOME") "/Library/Spelling"))
-;; ;; ;;   ;; Install dictionaries from 'https://github.com/wooorm/dictionaries'
-;; ;;   :custom
-
-;; (leaf flycheck
-;;   :ensure t
-;;   :config
-;;   (global-flycheck-mode)
-;;   )
 
 ;; Restore scratch buffer /after/ emacs init is complete, so it will call prog-mode hook
 (leaf persistent-scratch
