@@ -9,7 +9,7 @@
 (eval-and-compile
   (customize-set-variable
    'package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
-                       ("melpa" . "https://melpa.org/packages/")
+                       ("melpa" . "https://stable.melpa.org/packages/")
                        ("org"   . "https://orgmode.org/elpa/")))
   ;; add load path
   (add-to-list 'load-path (concat user-emacs-directory "elisp"))
@@ -192,7 +192,8 @@
                         ("shell"        . sh)
                         ("html"         . browser)
                         ("applescript"  . applescript)
-                        ("mysql"        . sql)))
+                        ("mysql"        . sql)
+			("conf-unix" . conf-unix)))
   :config
   (leaf ob-browser :ensure t :require t)
   (leaf ob-http :ensure t :require t)
